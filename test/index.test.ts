@@ -1,7 +1,7 @@
 import * as anyjson from "../src/index";
-const util = require("util");
 
-test("Serialize friends", () => {
+test("Serialize friends", () =>
+{
 
     let bob = { name: "Bob", friends: new Array<any>() };
     let sarah = { name: "Sarah", friends: new Array<any>() };
@@ -21,10 +21,32 @@ test("Serialize friends", () => {
 
     let json2 = anyjson.serialize(obj);
 
-    console.log(json);
-    console.log(util.inspect(obj, { showHidden: true, depth: null, colors: true }));
-    console.log(json2);
+    // console.log(json);
+    // console.log(util.inspect(obj, { showHidden: true, depth: null, colors: true }));
+    // console.log(json2);
 
-    // expect(json).toBe("");
-    // expect(obj).toBe("");
+    expect(json2).toBe(json);
+});
+
+test("Serialize external refs", async () =>
+{
+    let external = { name: "Big external object, that references local hardware" };
+    let toSerialize = { dataA: 1, dataB: 2, dataC: "5", hardwareAbstractionLayer: external };
+
+    let refToStr = new Map<any, string>()
+    let strToRef = new Map<string, any>();
+
+    refToStr.set(external, "hal");
+    strToRef.set("hal", external);
+
+    let json = anyjson.serialize(toSerialize, true, refToStr);
+
+    let obj = anyjson.deserialize(json, strToRef);
+
+    let json2 = anyjson.serialize(obj, true, refToStr);
+
+    // console.log(json);
+    // console.log(json2);
+
+    expect(json2).toBe(json);
 });
