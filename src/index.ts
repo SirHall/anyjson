@@ -116,7 +116,7 @@ export function deserialize(str: string, externNameToRef?: Map<string, any>): an
             else if (value.$refTo?.external != null && typeof value.$refTo.external === "string")
             {
                 if (externNameToRef == null)
-                    throw new Error(`Found the external object key '${value.$refTo.external}' but no external name-to-ref map was provided`)
+                    throw new Error(`Found the external object key '${value.$refTo.external}' but no external name-to-ref map was provided`);
                 if (!externNameToRef.has(value.$refTo.external))
                     throw new Error(`Found the external object key '${value.$refTo.external}' but could not find it in the name-to-ref map`);
 

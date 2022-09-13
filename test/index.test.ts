@@ -28,7 +28,7 @@ test("Serialize friends", () =>
     expect(json2).toBe(json);
 });
 
-test("Serialize external refs", async () =>
+test("Serialize external refs", () =>
 {
     let external = { name: "Big external object, that references local hardware" };
     let toSerialize = { dataA: 1, dataB: 2, dataC: "5", hardwareAbstractionLayer: external };
@@ -49,4 +49,32 @@ test("Serialize external refs", async () =>
     // console.log(json2);
 
     expect(json2).toBe(json);
+});
+
+test("Serialize non-objects", () =>
+{
+    expect(anyjson.serialize(4)).toBe("4");
+    expect(anyjson.deserialize(anyjson.serialize(4))).toBe(4);
+
+    expect(anyjson.serialize("anyjson")).toBe('"anyjson"');
+    expect(anyjson.deserialize(anyjson.serialize("anyjson"))).toBe("anyjson");
+});
+
+test("Invalid external value is deserialized", () =>
+{
+    let external = { name: "Big external object, that references local hardware" };
+    let toSerialize = { dataA: 1, dataB: 2, dataC: "5", hardwareAbstractionLayer: external };
+
+    let refToStr = new Map<any, string>()
+    refToStr.set(external, "hal");
+
+
+    let json = anyjson.serialize(toSerialize, true, refToStr);
+
+    expect(() => anyjson.deserialize(json)).toThrowError(new Error(`Found the external object key 'hal' but no external name-to-ref map was provided`))
+
+    let emptyMap = new Map<string, any>();
+
+    expect(() => anyjson.deserialize(json, emptyMap)).toThrowError(new Error(`Found the external object key 'hal' but could not find it in the name-to-ref map`))
+
 });
