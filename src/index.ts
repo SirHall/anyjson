@@ -4,11 +4,12 @@ export const parse = deserialize;
 // TODO: I could make both of these not require a stack and just perform a single pass if I can absolutely guarantee
 // that serialize will output an ordered array
 
-export function serialize(val: any, formatted: boolean = false, externRefToName?: Map<any, string> | WeakMap<any, string>): string
+export function serialize(val: unknown, formatted: boolean = false, externRefToName?: Map<any, string> | WeakMap<any, string>): string
 {
 
     // We do want to support any type of data
     if (typeof val !== "object") return JSON.stringify(val);
+    if (val == null) return "null";
 
     let refMap = new Map<Object, number>();
     let completedRefSet = new Set<Object>();
@@ -18,7 +19,7 @@ export function serialize(val: any, formatted: boolean = false, externRefToName?
     let refStack: any[] = [val];
     let nextId: number = 0;
 
-    const getObjId = (v: any): number | { external: string } =>
+    const getObjId = (v: any): number | { external: string; } =>
     {
         if (externRefToName?.has(v))
             return { external: externRefToName.get(v)! };
@@ -30,7 +31,7 @@ export function serialize(val: any, formatted: boolean = false, externRefToName?
             refMap.set(v, id);
         }
         return id;
-    }
+    };
 
     // This is what we will serialize, just a list of objects with inter-references
     let storeObjList = { ["$refRoot"]: true, root: {} as any };
@@ -76,7 +77,7 @@ export function serialize(val: any, formatted: boolean = false, externRefToName?
     return JSON.stringify(storeObjList, null, formatted ? 4 : undefined);
 }
 
-export function deserialize(str: string, externNameToRef?: Map<string, any>): any
+export function deserialize(str: string, externNameToRef?: Map<string, any>): unknown
 {
     const dataIn = JSON.parse(str);
     if (typeof dataIn !== "object")
