@@ -1,10 +1,11 @@
 {
     "compilerOptions": {
-        "target": "es2016", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-        "module": "commonjs", /* Specify what module code is generated. */
+        "target": "ES2023", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+        "module": "ESNext", /* Specify what module code is generated. */
         "rootDir": "./src", /* Specify the root folder within your source files. */
         "lib": [
-            "ES2017"
+            "DOM",
+            "ES2023"
         ],
         "declaration": true, /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
         "declarationMap": false, /* Create sourcemaps for d.ts files. */

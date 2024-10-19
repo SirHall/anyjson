@@ -1,4 +1,4 @@
-import * as anyjson from "../src/index";
+import * as refjson from "../src/index";
 
 test("Serialize friends", () =>
 {
@@ -15,11 +15,11 @@ test("Serialize friends", () =>
     bob.friends.push(sam);
     bob.friends.push(bob);
 
-    let json = anyjson.serialize({ bob, sarah, dirk, sam });
+    let json = refjson.serialize({ bob, sarah, dirk, sam });
 
-    let obj = anyjson.deserialize(json);
+    let obj = refjson.deserialize(json);
 
-    let json2 = anyjson.serialize(obj);
+    let json2 = refjson.serialize(obj);
 
     // console.log(json);
     // console.log(util.inspect(obj, { showHidden: true, depth: null, colors: true }));
@@ -39,11 +39,11 @@ test("Serialize external refs", () =>
     refToStr.set(external, "hal");
     strToRef.set("hal", external);
 
-    let json = anyjson.serialize(toSerialize, true, refToStr);
+    let json = refjson.serialize(toSerialize, true, refToStr);
 
-    let obj = anyjson.deserialize(json, strToRef);
+    let obj = refjson.deserialize(json, strToRef);
 
-    let json2 = anyjson.serialize(obj, true, refToStr);
+    let json2 = refjson.serialize(obj, true, refToStr);
 
     // console.log(json);
     // console.log(json2);
@@ -53,11 +53,11 @@ test("Serialize external refs", () =>
 
 test("Serialize non-objects", () =>
 {
-    expect(anyjson.serialize(4)).toBe("4");
-    expect(anyjson.deserialize(anyjson.serialize(4))).toBe(4);
+    expect(refjson.serialize(4)).toBe("4");
+    expect(refjson.deserialize(refjson.serialize(4))).toBe(4);
 
-    expect(anyjson.serialize("anyjson")).toBe('"anyjson"');
-    expect(anyjson.deserialize(anyjson.serialize("anyjson"))).toBe("anyjson");
+    expect(refjson.serialize("refjson")).toBe('"refjson"');
+    expect(refjson.deserialize(refjson.serialize("refjson"))).toBe("refjson");
 });
 
 test("Invalid external value is deserialized", () =>
@@ -69,12 +69,12 @@ test("Invalid external value is deserialized", () =>
     refToStr.set(external, "hal");
 
 
-    let json = anyjson.serialize(toSerialize, true, refToStr);
+    let json = refjson.serialize(toSerialize, true, refToStr);
 
-    expect(() => anyjson.deserialize(json)).toThrowError(new Error(`Found the external object key 'hal' but no external name-to-ref map was provided`))
+    expect(() => refjson.deserialize(json)).toThrowError(new Error(`Found the external object key 'hal' but no external name-to-ref map was provided`))
 
     let emptyMap = new Map<string, any>();
 
-    expect(() => anyjson.deserialize(json, emptyMap)).toThrowError(new Error(`Found the external object key 'hal' but could not find it in the name-to-ref map`))
+    expect(() => refjson.deserialize(json, emptyMap)).toThrowError(new Error(`Found the external object key 'hal' but could not find it in the name-to-ref map`))
 
 });
